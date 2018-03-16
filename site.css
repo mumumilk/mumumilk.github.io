@@ -1,0 +1,179 @@
+/** global styles */
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+input, button, submit, textarea {     
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit; 
+} 
+
+img {
+    max-width: 100%;
+}
+
+section {
+    height: 100vh;
+}
+
+.btn {
+    font-size: 1em;
+    font-weight: 300;
+    padding: 10px 50px;
+    border-radius: 50px;
+    margin: 10px 0;
+    transition: all .2s ease-in-out;
+}
+
+.border-white {
+    border: 1px solid white;
+}
+
+.border-blue {
+    border: 1px solid #185a9d;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 3em;
+}
+
+h2 {
+    font-weight: 400;
+    font-size: 2.5em;
+}
+
+h3 {
+    font-weight: 300;
+    font-size: 1.5em;
+}
+
+
+/** toolbar */
+
+/** about */
+
+.about-container {
+    display: flex;
+    background: #43cea2;
+    background: -webkit-linear-gradient(to right, #185a9d, #43cea2);
+    background: linear-gradient(to right, #185a9d, #43cea2);    
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.about {
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.about > h1 {
+    text-align: center;
+}
+
+.about > h3 {
+    max-width: 500px;
+    text-align: center;
+    margin-top: 0;
+}
+
+.about > img {
+    width: 20%;
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.about > button {
+    
+}
+
+
+
+
+/** timeline*/
+
+.timeline-container {
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+/** skills */
+
+/** contact */
+
+.contact-container {
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    color: black;
+    background: whitesmoke;
+}
+
+.contact {
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+}
+
+.contact-form > * {
+    margin: 10px;
+}
+
+.contact-form > input {
+    padding: 10px;
+    width: 100%;
+}
+
+.contact-form > textarea {
+    width: 100%;
+    padding: 10px;
+}
+
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+
+}
