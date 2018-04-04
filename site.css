@@ -20,9 +20,16 @@ input, button, submit, textarea {
     border: none;
     padding: 0;
     font: inherit;
-    cursor: pointer;
     outline: inherit; 
 } 
+
+button {
+    cursor: pointer;
+}
+
+input, textarea {
+    cursor: text;
+}
 
 img {
     max-width: 100%;
@@ -45,8 +52,8 @@ section {
     border: 1px solid #E93D68;
 }
 
-.border-blue {
-    border: 1px solid #185a9d;
+.border-primary {
+    border: 1px solid #243949;
 }
 
 .btn:hover {
@@ -75,6 +82,12 @@ a {
 a:visited {
     color: inherit;
 }
+
+.section-h1 {
+    text-align: center;
+    font-weight: 100;  
+}
+
 
 /** toolbar */
 
@@ -156,11 +169,6 @@ a:visited {
     display: flex;
     flex-direction: column;
     height: 100%;
-}
-
-.timeline > h1 {
-    text-align: center;
-    font-weight: 100;
 }
 
 .line {
@@ -249,12 +257,13 @@ a:visited {
 }
 
 .contact {
-    max-width: 900px;
+    max-width: 960px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
 }
+
 
 .contact-form {
     display: flex;
@@ -262,6 +271,8 @@ a:visited {
     align-items: center;
     justify-content: center;
     width: 400px;
+    max-width: 100%;
+    padding: 10px;
 }
 
 .contact-form > * {
@@ -270,13 +281,24 @@ a:visited {
 
 .contact-form > input {
     padding: 10px;
-    width: 100%;
+    width: 90%;
+    border: 1px solid #c4c4c4;
 }
 
 .contact-form > textarea {
-    width: 100%;
+    width: 90%;
     padding: 10px;
+    border: 1px solid #c4c4c4;
 }
+
+.contact-form > textarea:focus {
+    border: 1px solid #243949;
+}
+
+.contact-form > input:focus {
+    border: 1px solid #243949;
+}
+
 
 
 /* Landscape phones and down */
@@ -285,6 +307,19 @@ a:visited {
         font-size: 6em;
         letter-spacing: 3px;
     }
+
+    .section-h1 {
+        font-size: 3em;
+    }
+
+    .card {
+        max-width: 90%;
+    }
+
+    .contact {
+        max-width: 100vw;
+    }
+    
 }
 
 /* Landscape phone to portrait tablet */
@@ -292,6 +327,17 @@ a:visited {
     h1 {
         font-size: 5em;
     }
+
+    .line {
+        justify-content: center;
+    }
+
+    .line-content {
+        width: 100vw !important;
+        border: none !important;
+        justify-content: center !important;
+    }
+
 }
 
 /* Portrait tablet to landscape and desktop */
