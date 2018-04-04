@@ -35,9 +35,6 @@ img {
     max-width: 100%;
 }
 
-section {
-    
-}
 
 .btn {
     font-size: 1em;
@@ -255,29 +252,56 @@ a:visited {
     align-items: center;
     justify-content: center;
     color: black;
-    /* background: #43c6ac; */
-    background-image: url(assets/img/londrina.jpg);
-    height: 50vh;
+    background-image: url(assets/img/londrina-black.png);
+    min-height: 50vh;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 32%;
-}
-
-.opacity {
-    position: absolute;
-    height: 50vh;
-    width: 100%;
-    background: #1C1D21;
-    opacity: .8;
 }
 
 .skills {
     z-index: 1;
 }
 
+.opacity {
+    position: absolute;
+    min-height: 50vh;
+    width: 100%;
+    background: linear-gradient(274deg, #43c6ac, #191654);
+    opacity: .8;
+}
+
 .skills > h1 {
     color: white;
 }
+
+.skill-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.skill-list > div img {
+    margin: 20px;
+    height: 15vh;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    opacity: .9;
+    -webkit-transition : -webkit-filter 200ms linear;
+    transition: all .2s ease-in-out;
+}
+
+.skill-list > div:hover img {
+    margin: 20px;
+    transform: scale(1.1);
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%);
+    opacity: 1;
+    cursor: pointer;
+}
+
 
 /** contact */
 
