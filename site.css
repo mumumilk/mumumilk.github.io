@@ -36,7 +36,7 @@ img {
 }
 
 section {
-    min-height: 100vh;
+    
 }
 
 .btn {
@@ -98,14 +98,17 @@ a:visited {
     align-items: center;
     justify-content: center;
     color: white;
+    min-height: 100vh;
 
-    background: linear-gradient(274deg, #243949, #517fa4);
+    background: linear-gradient(274deg, #43c6ac, #191654);
+    /* background: linear-gradient(274deg, #243949, #517fa4); */
     background-size: 400% 400%;
 
     -webkit-animation: background-animation 59s ease infinite;
     -moz-animation: background-animation 59s ease infinite;
     animation: background-animation 59s ease infinite;
-    
+ 
+    box-shadow: 0 14px 108px 0 rgba(0, 0, 0, 0.12), 0 20px 85px 0 rgba(0, 0, 0, 0.19) !important;
 }
 
 @-webkit-keyframes background-animation {
@@ -160,7 +163,8 @@ a:visited {
     align-items: center;
     justify-content: center;
     color: black;
-    background: #f8f8f9;
+    /* background: #f8f8f9; */
+    min-height: 100vh;
 }
 
 .timeline {
@@ -191,14 +195,14 @@ a:visited {
     width: 50%;
     display: flex;
     justify-content: flex-start;
-    border-right: 1px solid #65A9C4;
+    border-right: 1px solid #43c6ac;
 }
 
 .timeline .line:nth-of-type(even) .line-content {
     width: 50%;
     display: flex;
     justify-content: flex-end;
-    border-left: 1px solid #65A9C4;
+    border-left: 1px solid #43c6ac;
 }
 
 .line-divider {
@@ -212,7 +216,7 @@ a:visited {
 .card {
     width: 400px;
     height: 300px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.19);
 }
 
 .card-image {
@@ -246,6 +250,35 @@ a:visited {
 
 /** skills */
 
+.skills-container {
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    color: black;
+    /* background: #43c6ac; */
+    background-image: url(assets/img/londrina.jpg);
+    height: 50vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 32%;
+}
+
+.opacity {
+    position: absolute;
+    height: 50vh;
+    width: 100%;
+    background: #1C1D21;
+    opacity: .8;
+}
+
+.skills {
+    z-index: 1;
+}
+
+.skills > h1 {
+    color: white;
+}
+
 /** contact */
 
 .contact-container {
@@ -254,6 +287,7 @@ a:visited {
     justify-content: center;
     color: black;
     background: whitesmoke;
+    min-height: 100vh;
 }
 
 .contact {
