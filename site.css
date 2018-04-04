@@ -1,8 +1,17 @@
+/** color scheme */
+/** 
+    #243949 primary
+    #517fa4 accent
+    #E93D68 warn
+    #182338 darkk
+    #65A9C4 light
+*/
+
 /** global styles */
 body{
     margin: 0;
     padding: 0;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 input, button, submit, textarea {     
@@ -20,7 +29,7 @@ img {
 }
 
 section {
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .btn {
@@ -32,8 +41,8 @@ section {
     transition: all .2s ease-in-out;
 }
 
-.border-white {
-    border: 1px solid white;
+.border-warn {
+    border: 1px solid #E93D68;
 }
 
 .border-blue {
@@ -46,7 +55,7 @@ section {
 
 h1 {
     font-weight: 700;
-    font-size: 3em;
+    font-size: 4em;
 }
 
 h2 {
@@ -59,6 +68,13 @@ h3 {
     font-size: 1.5em;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: inherit;
+}
 
 /** toolbar */
 
@@ -66,16 +82,37 @@ h3 {
 
 .about-container {
     display: flex;
-    background: #43cea2;
-    background: -webkit-linear-gradient(to right, #185a9d, #43cea2);
-    background: linear-gradient(to right, #185a9d, #43cea2);    
     align-items: center;
     justify-content: center;
     color: white;
+
+    background: linear-gradient(274deg, #243949, #517fa4);
+    background-size: 400% 400%;
+
+    -webkit-animation: background-animation 59s ease infinite;
+    -moz-animation: background-animation 59s ease infinite;
+    animation: background-animation 59s ease infinite;
+    
+}
+
+@-webkit-keyframes background-animation {
+    0%{background-position:0% 53%}
+    50%{background-position:100% 48%}
+    100%{background-position:0% 53%}
+}
+@-moz-keyframes background-animation {
+    0%{background-position:0% 53%}
+    50%{background-position:100% 48%}
+    100%{background-position:0% 53%}
+}
+@keyframes background-animation { 
+    0%{background-position:0% 53%}
+    50%{background-position:100% 48%}
+    100%{background-position:0% 53%}
 }
 
 .about {
-    max-width: 900px;
+    max-width: 960px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -84,6 +121,9 @@ h3 {
 
 .about > h1 {
     text-align: center;
+    padding: 10;
+    font-weight: 100;
+    letter-spacing: 6px;
 }
 
 .about > h3 {
@@ -99,12 +139,6 @@ h3 {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.about > button {
-    
-}
-
-
-
 
 /** timeline*/
 
@@ -113,6 +147,93 @@ h3 {
     align-items: center;
     justify-content: center;
     color: black;
+    background: #f8f8f9;
+}
+
+.timeline {
+    max-width: 960px;
+    width: 960px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.timeline > h1 {
+    text-align: center;
+    font-weight: 100;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
+
+.timeline .line:nth-of-type(odd) {
+    display: flex;
+    flex-direction: row;
+}
+
+.timeline .line:nth-of-type(even) {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.timeline .line:nth-of-type(odd) .line-content{
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    border-right: 1px solid #65A9C4;
+}
+
+.timeline .line:nth-of-type(even) .line-content {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    border-left: 1px solid #65A9C4;
+}
+
+.line-divider {
+    display: flex; 
+    width: 100%; 
+    justify-content: center;
+    opacity: 0.5;
+    margin: 10px 0;
+}
+
+.card {
+    width: 400px;
+    height: 300px;
+    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card-image {
+    width: 100%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgb(240, 240, 240);
+}
+
+.card-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.card-text h3 {
+    font-weight: 300;
+    font-size: 1.2em;
+    margin-bottom: 2px;
+}
+
+.card-text p {
+    font-weight: 300;
+    margin: 0;
+    opacity: .5;
+    font-size: 1em;
 }
 
 /** skills */
@@ -159,13 +280,18 @@ h3 {
 
 
 /* Landscape phones and down */
-@media (max-width: 480px) {
-
+@media  only screen and  (max-width: 480px) {
+    h1 {
+        font-size: 6em;
+        letter-spacing: 3px;
+    }
 }
 
 /* Landscape phone to portrait tablet */
-@media (max-width: 767px) {
-
+@media only screen and (max-width: 767px) {
+    h1 {
+        font-size: 5em;
+    }
 }
 
 /* Portrait tablet to landscape and desktop */
