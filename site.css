@@ -78,6 +78,7 @@ a {
 
 a:visited {
     color: inherit;
+    text-decoration: none;
 }
 
 .section-h1 {
@@ -371,7 +372,18 @@ a:visited {
 .footer > * {
     padding: 5px;
     font-size: 3em;
+    color: white;
+    
 }
+
+.footer > a {
+    text-decoration: none;
+}
+
+.footer > a:visited{
+    text-decoration: none;
+}
+
 
 /* Landscape phones and down */
 @media  only screen and  (max-width: 480px) {
