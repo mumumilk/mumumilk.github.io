@@ -98,7 +98,6 @@ a:visited {
     min-height: 100vh;
 
     background: linear-gradient(274deg, #43c6ac, #191654);
-    /* background: linear-gradient(274deg, #243949, #517fa4); */
     background-size: 400% 400%;
 
     -webkit-animation: background-animation 59s ease infinite;
@@ -160,7 +159,6 @@ a:visited {
     align-items: center;
     justify-content: center;
     color: black;
-    /* background: #f8f8f9; */
     min-height: 100vh;
 }
 
@@ -252,8 +250,9 @@ a:visited {
     align-items: center;
     justify-content: center;
     color: black;
-    background-image: url(assets/img/londrina-black.png);
+    background: linear-gradient(rgba(67, 198, 172, 0.45), rgba(25, 22, 84, 0.45)) ,url(assets/img/londrina-black.png);
     min-height: 50vh;
+    max-height: 100vh;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 32%;
@@ -263,13 +262,6 @@ a:visited {
     z-index: 1;
 }
 
-.opacity {
-    position: absolute;
-    min-height: 50vh;
-    width: 100%;
-    background: linear-gradient(274deg, #43c6ac, #191654);
-    opacity: .8;
-}
 
 .skills > h1 {
     color: white;
@@ -357,7 +349,29 @@ a:visited {
     border: 1px solid #243949;
 }
 
+/** footer */
+.footer-container {
+    width: 100%;
+    min-height: 10vh;
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    color: whitesmoke;
+    background: black;
+}
 
+.footer {
+    max-width: 960px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer > * {
+    padding: 5px;
+    font-size: 3em;
+}
 
 /* Landscape phones and down */
 @media  only screen and  (max-width: 480px) {
@@ -376,6 +390,11 @@ a:visited {
 
     .contact {
         max-width: 100vw;
+    }
+
+    .skill-list > div img {
+        -webkit-filter: grayscale(50%);
+        filter: grayscale(50%);
     }
     
 }
