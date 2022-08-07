@@ -2,177 +2,370 @@
 <html lang="en-US">
 
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117744137-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+    <script async
+        src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
 
-        gtag('config', 'UA-117744137-1');
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.142.0/build/three.module.js",
+          "stats": "https://unpkg.com/stats-js@1.0.1/src/Stats.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+        import Stats from 'stats';
+
+        const stats = new Stats();
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
+
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://unpkg.com/three@0.142.0/examples/jsm/controls/OrbitControls.js';
+
+        //#region Variables
+        const RADIUS = 10;
+        const CITIES = {
+            CURITIBA: {
+                lat: -25.441105,
+                long: -49.276855
+            },
+            NULL_ISLAND: {
+                lat: 0,
+                long: 0
+            },
+            NEW_YORK: {
+                lat: 40.73061,
+                long: -73.935242
+            },
+            TEXAS: {
+                lat: 31.0,
+                long: -100.0
+            },
+            SAO_PAULO: {
+                lat: -23.533773,
+                long: -46.62529
+            },
+            LONDRINA: {
+                lat: -23.2927,
+                long: -51.1732
+            },
+            SHENZEN: {
+                lat: 22.542883,
+                long: 114.062996
+            },
+            BUENOS_AIRES: {
+                lat: -34.603722,
+                long: -58.381592
+            },
+            MONTEVIDEO: {
+                lat: -34.901112,
+                long: -56.164532
+            }
+        };
+
+        const PROJECTS_WORKED = [
+            {
+                from: CITIES.LONDRINA,
+                to: CITIES.CURITIBA
+            },
+            {
+                from: CITIES.LONDRINA,
+                to: CITIES.SHENZEN
+            },
+            {
+                from: CITIES.CURITIBA,
+                to: CITIES.SAO_PAULO
+            },
+            {
+                from: CITIES.CURITIBA,
+                to: CITIES.TEXAS
+            },
+            {
+                from: CITIES.CURITIBA,
+                to: CITIES.NEW_YORK
+            },
+            {
+                from: CITIES.CURITIBA,
+                to: CITIES.MONTEVIDEO
+            },
+            {
+                from: CITIES.CURITIBA,
+                to: CITIES.BUENOS_AIRES
+            }
+        ];
+        //#endregion
+
+        //#region Functions
+
+        /**
+         * @param {number} lat - Latitude in degrees
+         * @param {number} long - Longitude in degrees
+         * @param {number} radius - Radius
+         * @returns {THREE.Vector3} - Vector3 pointing to lat long for a given radius
+         */
+        function getVectorFromLatLong(lat, long, radius) {
+            const spherical = {
+                lat: THREE.MathUtils.degToRad(90 - lat),
+                lon: THREE.MathUtils.degToRad(long)
+            };
+
+            return new THREE.Vector3().setFromSphericalCoords(radius, spherical.lat, spherical.lon);
+        }
+
+        /**
+         * Returns the normal vector given from and to vectors
+         * @param {THREE.Vector3} from
+         * @param {THREE.Vector3} to
+         * @returns {THREE.Vector3} normalized vector
+         */
+        function getNormal(from, to) {
+            var cb = new THREE.Vector3(),
+                ab = new THREE.Vector3(),
+                normal = new THREE.Vector3();
+            cb.subVectors(new THREE.Vector3(), to);
+            ab.subVectors(from, to);
+            cb.cross(ab);
+            normal.copy(cb).normalize();
+            return normal;
+        }
+
+        /**
+         * @param {number} radius
+         * @returns {THREE.Mesh}
+         */
+        function drawEarth(radius) {
+            const textureLoader = new THREE.TextureLoader();
+            const blackWhiteTexture = textureLoader.load('./assets/img/earth_black_white.png');
+            const disk = textureLoader.load('./assets/img/circle.png');
+
+            const globe = new THREE.Points(
+                new THREE.SphereGeometry(radius, 128, 128),
+                new THREE.ShaderMaterial({
+                    wireframe: true,
+                    vertexColors: true,
+                    uniforms: {
+                        visibility: {
+                            value: blackWhiteTexture
+                        },
+                        shift: {
+                            value: 0
+                        },
+                        shape: {
+                            value: disk
+                        },
+                        size: {
+                            value: 0.3
+                        },
+                        scale: {
+                            value: window.innerHeight / 2
+                        },
+                        color1: {
+                            value: new THREE.Color(0xa74cd2)
+                        },
+                        color2: {
+                            value: new THREE.Color(0xd9d9d9)
+                        }
+                    },
+                    vertexShader: `
+                        uniform float scale;
+                        uniform float size;
+                        
+                        varying vec2 vUv;
+                        varying vec3 vColor;
+                        
+                        void main() {
+                        
+                            vUv = uv;
+                            vColor = color;
+                            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                            gl_PointSize = size * ( scale / length( mvPosition.xyz ) );
+                            gl_Position = projectionMatrix * mvPosition;
+
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform sampler2D visibility;
+                        uniform float shift;
+                        uniform sampler2D shape;
+                        
+                        varying vec2 vUv;
+                        varying vec3 vColor;
+          
+                        uniform vec3 color1;
+                        uniform vec3 color2;
+
+                        void main() {
+                            vec2 uv = vUv;
+                            uv.x += shift;
+                            vec4 v = texture2D(visibility, uv);
+                            if (length(v.rgb) > 1.0) discard;
+
+                            gl_FragColor = vec4( vColor, 1.0 );
+                            vec4 shapeData = texture2D( shape, gl_PointCoord );
+                            if (shapeData.a < 0.5) discard;
+                            gl_FragColor = vec4(mix(color1, color2, vUv.y), 0.5);
+                        }
+					`,
+                    transparent: true
+                })
+            );
+
+            globe.rotation.y = -Math.PI * 0.5;
+            return globe;
+        }
+
+        /**
+         * @param {THREE.Vector3} from - Vector3 at the first point
+         * @param {THREE.Vector3} to - Vector3 at the second point
+         * @returns {Object} - Object with the mesh and the geometry
+         */
+        function drawCurve(from, fromTreshold, to, toTreshold) {
+            const normal = getNormal(from, to);
+            const angle = from.angleTo(to);
+
+            const distance = from.distanceTo(to) / 10;
+            const factor = distance < 1 ? 1 + distance : distance;
+
+            const handle1 = from
+                .clone()
+                .applyAxisAngle(normal, angle * fromTreshold)
+                .multiplyScalar(factor);
+            const handle2 = from
+                .clone()
+                .applyAxisAngle(normal, angle * toTreshold)
+                .multiplyScalar(factor);
+
+            const curve = new THREE.CubicBezierCurve3(from, handle1, handle2, to);
+
+            const geometry = new THREE.TubeBufferGeometry(curve, 1000, 0.013, 10, false);
+
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xdf758f,
+                side: THREE.FrontSide,
+                blending: THREE.AdditiveBlending,
+                shininess: 0,
+                emissive: 0xdf758f
+            });
+
+            const curveObject = new THREE.Mesh(geometry, material);
+
+            return { curve: curveObject, geometry };
+        }
+        //#endregion
+
+        //#region Scene
+        const scene = new THREE.Scene();
+        //#endregion
+
+        //#region Camera
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.setScalar(13);
+        camera.position.setX(-7);
+        camera.position.setY(-11);
+        camera.position.setZ(20);
+        //#endregion
+
+        //#region Renderer
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const canvas = renderer.domElement;
+        document.body.appendChild(canvas);
+        //#endregion
+
+        //#region Controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        const speed = 0.8;
+        controls.zoomSpeed = speed;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1;
+        controls.panSpeed = speed;
+        controls.rotateSpeed = speed;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        //#endregion
+
+        //#region Light
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 3, 15);
+        scene.add(light);
+        //#endregion
+
+        //#region Objects
+        const earth = drawEarth(RADIUS);
+        scene.add(earth);
+
+        const curves = [];
+        for (const { to, from } of PROJECTS_WORKED) {
+            const vectorFrom = getVectorFromLatLong(from.lat, from.long, RADIUS);
+            const vectorTo = getVectorFromLatLong(to.lat, to.long, RADIUS);
+
+            const { geometry, curve } = drawCurve(vectorFrom, 0.3, vectorTo, 0.7);
+            scene.add(curve);
+
+            curves.push({ geometry, current: false });
+        }
+
+        // Gets random curve to start animating
+        curves[Math.floor(Math.random() * curves.length)].current = true;
+
+        //#endregion
+
+        //#region Resizer
+        window.addEventListener('resize', onWindowResize, false);
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        //#endregion
+
+        let fraction = 0;
+
+        function animate() {
+            stats.begin();
+            fraction += 300;
+
+            controls.update();
+
+            const currentIndex = curves.findIndex((curve) => curve.current);
+            curves[currentIndex].geometry.setDrawRange(0, fraction);
+
+            if (fraction > 60000) {
+                const nextIndex = 1 + (currentIndex % (curves.length - 1));
+                curves[currentIndex].current = false;
+                curves[nextIndex].current = true;
+                fraction = 0;
+            }
+
+            stats.end();
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 
     <meta charset="UTF-8" />
-    <title>Samuel Koch</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="./site.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700" rel="stylesheet">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
-        crossorigin="anonymous"></script>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1">
 </head>
 
 <body>
-    <header class="toolbar">
 
-    </header>
-    <section class="about-container">
-        <div class="about">
-            <h1>Samuel Koch</h1>
-            <h3>Agile fullstack developer</h3>
-        </div>
-    </section>
-    <section class="timeline-container">
-        <div class="timeline">
-            <h1 class="section-h1">Timeline</h1>
-            <span class="line-divider">
-                <img src="assets/img/today.png" alt="Logo" style="height: 2.5em" />
-            </span>
-            <span class="line-divider">today</span>
-            <div class="line">
-                <div class="line-content">
-                    <div class="card">
-                        <div class="card-image">
-                            <img style="height: 30%" src="assets/img/veltec.png" alt="veltec logo">
-                        </div>
-                        <div class="card-text">
-                            <h3>
-                                <a href="https://veltec.com.br/" target="blank">Veltec</a>
-                            </h3>
-                            <p>Full-stack developer</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <span class="line-divider">
-                <img src="assets/img/briefcase.png" alt="Logo" style="height: 30px" />
-            </span>
-            <span class="line-divider">06/2018</span>
-            <div class="line">
-                <div class="line-content">
-                    <div class="card">
-                        <div class="card-image">
-                            <img style="height: 30%" src="assets/img/forlogic.png" alt="forlogic software logo">
-                        </div>
-                        <div class="card-text">
-                            <h3>
-                                <a href="http://www.forlogic.net/" target="blank">Forlogic</a>
-                            </h3>
-                            <p>Full-stack developer</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <span class="line-divider">
-                <img src="assets/img/briefcase.png" alt="Logo" style="height: 30px" />
-            </span>
-            <span class="line-divider">02/2016</span>
-            <div class="line">
-                <div class="line-content">
-                    <div class="card">
-                        <div class="card-image">
-                            <img style="height: 50%" src="assets/img/utfpr.png" alt="UTFPR logo">
-                        </div>
-                        <div class="card-text">
-                            <h3>
-                                <a href="http://portal.utfpr.edu.br/" target="blank">UTFPR</a>
-                            </h3>
-                            <p>System analysis and development</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <span class="line-divider">
-                <img src="assets/img/hat.png" alt="Logo" style="height: 2.5em" />
-            </span>
-            <span class="line-divider">01/2015</span>
-            <div class="line">
-                <div class="line-content" style="height: 50px;">
-                </div>
-            </div>
-            <span class="line-divider">
-                <img src="assets/img/baby.png" alt="Logo" style="height: 3.5em" />
-            </span>
-            <span class="line-divider">02/1996</span>
-        </div>
-    </section>
-    <section class="skills-container">
-        <div class="skills">
-            <h1 class="section-h1">Skills</h1>
-            <div class="skill-list">
-                <div>
-                    <a href="https://angular.io/" target="blank">
-                        <img src="assets/img/angular-logo.png" alt="Angular logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://docs.microsoft.com/pt-br/dotnet/csharp/" target="blank">
-                        <img src="assets/img/csharp-logo.png" alt="c# logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://www.w3.org/html/" target="blank">
-                        <img src="assets/img/html-logo.png" alt="Html logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://www.w3.org/Style/CSS/" target="blank">
-                        <img src="assets/img/css-logo.png" alt="css logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://www.w3schools.com/js/" target="blank">
-                        <img src="assets/img/js-logo.png" alt="js logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://ionicframework.com" target="blank">
-                        <img src="assets/img/ionic-logo.png" alt="ionic logo">
-                    </a>
-                </div>
-                <div>
-                    <a href="https://reactjs.org" target="blank">
-                        <img src="assets/img/react-logo.png" alt="react logo">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="contact-container">
-        <div class="contact">
-            <h1 class="section-h1">Contact me!</h1>
-            <form method="POST" action="https://formspree.io/samuel.souza.koch@gmail.com" class="contact-form">
-                <input required type="text" name="name" placeholder="Your name">
-                <input required type="email" name="email" placeholder="Your email">
-                <textarea required name="message" placeholder="Your message"></textarea>
-                <button class="btn border-primary" type="submit">Send</button>
-            </form>
-        </div>
-    </section>
-    <footer class="footer-container">
-        <div class="footer">
-            <a href="http://github.com/mumumilk" target="blank">
-                <i class="fab fa-github-square"></i>
-            </a>
-            <a href="https://www.linkedin.com/in/samuel-koch-92098ab7/" target="blank">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="https://www.facebook.com/samuel.koch.397" target="blank">
-                <i class="fab fa-facebook-square"></i>
-            </a>
-            <a href="https://twitter.com/mumukoch" target="blank">
-                <i class="fab fa-twitter-square"></i>
-            </a>
-        </div>
-    </footer>
 </body>
 
 </html>
